@@ -920,7 +920,15 @@ let userCommands = {
 		this.room.updateUser(this);
 	},
 	"radicalblue": function () {
-		this.public.color = "nathan";
+		this.public.color = "radicalblue";
+		this.room.updateUser(this);
+	},
+	"radicalpink": function () {
+		this.public.color = "radicalpink";
+		this.room.updateUser(this);
+	},
+	"applecat": function () {
+		this.public.color = "applecat";
 		this.room.updateUser(this);
 	},
 	"radicalleft": function () {
