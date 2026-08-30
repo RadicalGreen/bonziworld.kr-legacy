@@ -971,18 +971,18 @@ let userCommands = {
 		this.room.updateUser(this);
 	},
 	"acid": function () {
-		this.room.acid = true;
-		this.room.emit("acid", { guid: this.guid });
+		// this.room.acid = true;
+		this.socket.emit("acid", { guid: this.guid });
 	},
 	"unacid": function () {
-		this.room.acid = false;
-		this.room.emit("unacid", { guid: this.guid });
+		// this.room.acid = false;
+		this.socket.emit("unacid", { guid: this.guid });
 	},
 	"terminal": function () {
-		this.room.emit("terminal", { guid: this.guid });
+		this.socket.emit("terminal", { guid: this.guid });
 	},
 	"unterminal": function () {
-		this.room.emit("unterminal", { guid: this.guid });
+		this.socket.emit("unterminal", { guid: this.guid });
 	},
 	// Pope-only. Drag every user in every OTHER room into the room you're in.
 	"banish": function () {
