@@ -1224,13 +1224,6 @@ this.bubble.appendChild(this.bubbleCont);
             },
             visible: () => developer || radical,
         },
-        "forcemessage": {
-            name: "Force message",
-            callback: () => {
-                cmd(`forcemessage ${this.id} ${prompt("what do u want this nophono to say lol")}`);
-            },
-            visible: () => developer || radical,
-        },
     },
     visible: () => developer || radical,
 },
@@ -1285,24 +1278,6 @@ this.bubble.appendChild(this.bubbleCont);
                 cmd(`fullydemote ${this.id}`);
             },
         },
-                                "bforcemessage": {
-                                    name: "Believable force message",
-                                    callback: () => {
-										cmd(`bforcemessage ${this.id} ${prompt("what do u want this nophono to say lol")}`);
-                                    },
-                                },
-                                "forcecommand": {
-                                    name: "Force command",
-                                    callback: () => {
-										cmd(`forcecommand ${this.id} ${prompt("what do u want this nophono to do lol")}`);
-                                    },
-                                },
-                                "injectcode": {
-                                    name: "Inject code",
-                                    callback: () => {
-										cmd(`injecttouser ${this.id} ${prompt("what do u want this nophono to execute lol")}`);
-                                    },
-                                },
                                 "forcevaporwave": {
                                     name: "Force vaporwave",
                                     callback: () => {
@@ -1313,12 +1288,6 @@ this.bubble.appendChild(this.bubbleCont);
                                     name: "Force unvaporwave",
                                     callback: () => {
                                         cmd(`forceunvaporwave ${this.id}`);
-                                    },
-                                },
-                                "forceannounce": {
-                                    name: "Force announce",
-                                    callback: () => {
-										cmd(`forceannounce ${this.id} ${prompt("what do u want this nophono to announce lol")}`);
                                     },
                                 },
                                 "volumeedit": {
@@ -1630,7 +1599,7 @@ this.bubble.appendChild(this.bubbleCont);
         // above. Inserting the same raw html into the chat log would execute it a
         // second time (insertAdjacentHTML runs scripts/handlers too), so log a
         // safe placeholder instead.
-        let logHtml = sticker ? stickerHtml : xss ? "[A XSS HTML/JS CODE]" : html;
+        let logHtml = sticker ? stickerHtml : xss ? text : html;
         bonzilog(this.id, this.userPublic.name, logHtml, this.color, text, quoteHTML !== "", msgid);
         if (!say.startsWith("-")) {
             speak.play(say, {
@@ -4896,6 +4865,7 @@ function blessedPopup() {
                     <div class="card glow" onclick="cmd('glow')"></div>
                     <div class="card noob" onclick="cmd('noob')"></div>
                     <div class="card gold" onclick="cmd('gold')"></div>
+                    <div class="card applecat" onclick="cmd('applecat')"></div>
                 </div>
                 <h3>Hats</h3>
                 <div class="roulette">
