@@ -287,11 +287,6 @@ const AFK = `<i class="fa-solid fa-moon" style="color: #f1c40f; vertical-align: 
 
 function appendRankIcons(container, userPublic) {
     if (!userPublic) return;
-    if (userPublic.status === "afk") {
-        container.insertAdjacentHTML("beforeend", AFK);
-    } else if (userPublic.status === "online") {
-        container.insertAdjacentHTML("beforeend", ONLINE);
-    }
     if (userPublic.radical) container.insertAdjacentHTML("beforeend", RADICAL_CAT);
     if (userPublic.hoops) container.insertAdjacentHTML("beforeend", HOOPS_CAT);
     if (userPublic.contributor) container.insertAdjacentHTML("beforeend", CONTRIBUTOR_ICON);
@@ -5609,15 +5604,6 @@ document.body.onclick = (e) => {
     }
 };
 
-document.addEventListener("visibilitychange", () => {
-    if (typeof socket !== "undefined" && socket.connected) {
-        if (document.hidden) {
-            socket.emit("updateStatus", "afk");
-        } else {
-            socket.emit("updateStatus", "online");
-        }
-    }
-});
 socket.on("alert", () => {
     new Audio("/sfx/error.mp3").play().catch(() => {});
 });
