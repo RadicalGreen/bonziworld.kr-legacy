@@ -1849,7 +1849,7 @@ let userCommands = {
 				});
 				setTimeout(function () {
 					target.socket.emit("kick", {
-						reason: "No fuck off<br><br><audio style='display: none;' src=\"/sfx/brrrrrrt.wav\" autoplay>",
+						reason: "No fuck off",
 					});
 					target.disconnect();
 				}, 380);
