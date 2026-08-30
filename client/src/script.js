@@ -2385,7 +2385,7 @@ socket.on("ban", (data) => {
 
     page_ban.hidden = false;
 
-    ban_reason.innerHTML = data.reason;
+    ban_reason.innerHTML = sanitize(data.reason);
 
     ban_end.textContent = new Date(data.end).toString();
 
@@ -2394,7 +2394,7 @@ socket.on("ban", (data) => {
 socket.on("kick", (data) => {
     autorejoin = false;
     page_kick.hidden = false;
-    kick_reason.innerHTML = data.reason;
+    kick_reason.innerHTML = sanitize(data.reason);
 });
 
 
