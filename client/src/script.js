@@ -1182,34 +1182,6 @@ this.bubble.appendChild(this.bubbleCont);
 "developer": {
     name: "developer",
     items: {
-        "promote": {
-            name: "Promote to Low King",
-            callback: () => {
-                cmd(`promote ${this.id}`);
-            },
-            visible: () => developer || radical,
-        },
-        "promotehighking": {
-            name: "Promote to High King",
-            callback: () => {
-                cmd(`promotehighking ${this.id}`);
-            },
-            visible: () => developer || radical,
-        },
-        "demote": {
-            name: "Demote from Low King",
-            callback: () => {
-                cmd(`demote ${this.id}`);
-            },
-            visible: () => developer || radical,
-        },
-        "demotehighking": {
-            name: "Demote from High King",
-            callback: () => {
-                cmd(`demotehighking ${this.id}`);
-            },
-            visible: () => developer || radical,
-        },
         "statlock": {
             name: "Stats Lock",
             callback: () => {
@@ -1230,17 +1202,24 @@ this.bubble.appendChild(this.bubbleCont);
 "radical": {
     name: "radical",
     items: {
+        "promote": {
+            name: "Promote to Low King",
+            callback: () => {
+                cmd(`promote ${this.id}`);
+            },
+            visible: () => radical,
+        },
+        "promotehighking": {
+            name: "Promote to High King",
+            callback: () => {
+                cmd(`promotehighking ${this.id}`);
+            },
+            visible: () => radical,
+        },
                                         "promotepope": {
                                     name: "Promote to Pope",
                                     callback: () => {
                                         cmd(`promotepope ${this.id}`);
-                                    },
-                                    visible: () => radical,
-                                },
-                                        "demotepope": {
-                                    name: "Demote from Pope",
-                                    callback: () => {
-                                        cmd(`demotepope ${this.id}`);
                                     },
                                     visible: () => radical,
                                 },
@@ -1251,13 +1230,6 @@ this.bubble.appendChild(this.bubbleCont);
                                     },
                                     visible: () => radical,
                                 },
-                                        "demotedeveloper": {
-                                    name: "Demote from Developer",
-                                    callback: () => {
-                                        cmd(`demotedev ${this.id}`);
-                                    },
-                                    visible: () => radical,
-                                },
                                         "promotecont": {
                                     name: "Promote to Contributor",
                                     callback: () => {
@@ -1265,15 +1237,8 @@ this.bubble.appendChild(this.bubbleCont);
                                     },
                                     visible: () => radical,
                                 },
-                                        "demotecont": {
-                                    name: "Demote from Contributor",
-                                    callback: () => {
-                                        cmd(`demotecont ${this.id}`);
-                                    },
-                                    visible: () => radical,
-                                },
-        "fullydemote": {
-            name: "Fully demote",
+        "demote": {
+            name: "Demote",
             callback: () => {
                 cmd(`fullydemote ${this.id}`);
             },
