@@ -14,7 +14,7 @@
 		"sanitize-html": "^2.17.5",
 		"sharp": "^0.34.5",
 		"socket": "^1.1.129",
-		"socket.io": "^2.5.1",
+		"socket.io": "^4.8.3",
 		"socket.io-client": "^2.5.0",
 		"sqlite3": "^6.0.1",
 		"zod": "^4.3.6"
