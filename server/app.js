@@ -1,9 +1,9 @@
 import http from "node:http";
-import socketio from "socket.io";
+import { Server } from "socket.io";
 import express from "express";
 import { cookieParser } from "./utils.js";
 
 export const app = express();
 app.use(cookieParser);
 export const server = http.createServer(app);
-export const io = socketio(server);
+export const io = new Server(server);
