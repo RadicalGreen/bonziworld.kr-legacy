@@ -919,6 +919,10 @@ let userCommands = {
 		this.public.tag = "Owner";
 		this.room.updateUser(this);
 	},
+	"nothingleft": function () {
+		this.public.color = "nothingleft";
+		this.room.updateUser(this);
+	},
 	"radicalblue": function () {
 		this.public.color = "radicalblue";
 		this.room.updateUser(this);
