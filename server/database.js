@@ -207,10 +207,9 @@ export async function unblockImage(url) {
 export async function getMessageIdsFromIp(ip) {
 	return new Promise((resolve, reject) => {
 		db.all(
-			`SELECT m.id FROM message_logs m
-			 JOIN user_joins u ON m.user_id = u.id
-			 WHERE u.ip = ?
-			 ORDER BY m.id DESC
+			`SELECT id FROM message_logs 
+			 WHERE ip = ?
+			 ORDER BY id DESC
 			 LIMIT 50`,
 			[ip],
 			(err, rows) => {
