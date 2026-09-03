@@ -21,7 +21,8 @@ db.serialize(() => {
 	db.run(`CREATE TABLE IF NOT EXISTS admin_logins (cookie TEXT PRIMARY KEY, godword TEXT)`);
 	db.run(`CREATE TABLE IF NOT EXISTS blocked_images (image TEXT PRIMARY KEY, reason TEXT)`);
 	db.run(`CREATE TABLE IF NOT EXISTS user_joins (id INTEGER PRIMARY KEY AUTOINCREMENT, ip TEXT, name TEXT, guid TEXT, cookie TEXT, headers TEXT)`);
-	db.run(`CREATE TABLE IF NOT EXISTS message_logs (id INTEGER PRIMARY KEY AUTOINCREMENT, user_id TEXT, name TEXT, type TEXT, data TEXT)`);
+	db.run(`CREATE TABLE IF NOT EXISTS message_logs (id INTEGER PRIMARY KEY AUTOINCREMENT, user_id TEXT, name TEXT, type TEXT, ip TEXT, data TEXT)`);
+	db.run(`CREATE INDEX IF NOT EXISTS idx_message_logs_ip ON message_logs(ip)`);
 	db.run(`CREATE TABLE IF NOT EXISTS logs (id INTEGER PRIMARY KEY AUTOINCREMENT, ip TEXT, time DATETIME DEFAULT CURRENT_TIMESTAMP)`);
 	db.run(`CREATE TABLE IF NOT EXISTS ip_blocks (id INTEGER PRIMARY KEY AUTOINCREMENT, ip_range TEXT UNIQUE, type TEXT, reason TEXT)`);
 	db.run(`CREATE VIEW IF NOT EXISTS ip_block_view AS SELECT ip_range, type, reason FROM ip_blocks`);
