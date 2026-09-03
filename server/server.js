@@ -2436,7 +2436,7 @@ let userCommands = {
                 user.disconnect();
             }
         }
-        this.notify(`Permbanned that faggot`);
+        this.notify(`Logbanned that person`);
     } else {
         const duration = 60000 * 60;
         const reason = "Temp banned for 1 hour by moderator.";
