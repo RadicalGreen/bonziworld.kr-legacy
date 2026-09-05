@@ -87,9 +87,23 @@ export function reloadEvilIspList() {
 			continue;
 		}
 		const isAllow = line.startsWith("!");
-		// strip the "!" marker, socks schemes, and any trailing inline comment
+		// strip the "!" marker, socks/http schemes, credentials, and trailing comments
 		let body = (isAllow ? line.slice(1) : line).replace(/#.*$/, "").trim();
-		body = body.replace(/^socks[45]:\/\/(?:[^@]+@)?/i, "").trim();
+		body = body.replace(/^(?:socks[45]|https?):\/\/(?:[^@]+@)?/i, "").trim();
+
+
+		if (body.startsWith("[")) {
+			const closingBracket = body.indexOf("]");
+			if (closingBracket !== -1) {
+				body = body.slice(1, closingBracket);
+			}
+		} else {
+			const colonIdx = body.indexOf(":");
+			if (colonIdx !== -1 && body.indexOf(":", colonIdx + 1) === -1) {
+				body = body.slice(0, colonIdx);
+			}
+		}
+
 		if (!body) continue;
 		const cidr = parseCidr(body);
 		if (!cidr) { invalid++; continue; }
