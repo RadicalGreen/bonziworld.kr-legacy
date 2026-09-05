@@ -87,8 +87,9 @@ export function reloadEvilIspList() {
 			continue;
 		}
 		const isAllow = line.startsWith("!");
-		// strip the "!" marker and any trailing inline comment
-		const body = (isAllow ? line.slice(1) : line).replace(/#.*$/, "").trim();
+		// strip the "!" marker, socks schemes, and any trailing inline comment
+		let body = (isAllow ? line.slice(1) : line).replace(/#.*$/, "").trim();
+		body = body.replace(/^socks[45]:\/\/(?:[^@]+@)?/i, "").trim();
 		if (!body) continue;
 		const cidr = parseCidr(body);
 		if (!cidr) { invalid++; continue; }
