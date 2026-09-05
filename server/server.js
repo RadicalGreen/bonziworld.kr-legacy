@@ -1328,48 +1328,73 @@ let userCommands = {
 		await db.removeBan(ip);
 		this.notify(`Unbanned ${ip}.`);
 	},
-	"asnban": async function (text) {
-		let [target, ...reasonArr] = text.split(" ");
-		if (!target) return this.notify("Please specify a user ID or ASN.");
+"asnban": async function (text) {
+    let [target, ...reasonArr] = text.split(" ");
+    if (!target) return this.notify("Please specify a user ID, username, or ASN.");
 
-		let reason = reasonArr.join(" ") || "ASN Ban";
-		let asn = null;
-		let targetName = null;
+    let reason = reasonArr.join(" ").trim() || "ASN Ban";
+    let asn = null;
+    let targetName = null;
 
-		let user = findUser(target);
+    let user = findUser(target);
 
-		if (user) {
-			if (user.runlevel === 7) {
-				return this.socket.emit("forcetalk", { guid: this.guid, text: "HEY GUYS LOOK AT ME I TRIED TO BAN THE OWNER OF THIS SITE LMAO" });
-			}
-			let warning = staffTargetWarning(this, user, "asnban");
-			if (warning) return this.notify(warning);
+    if (user) {
+        if (user.runlevel === 7) {
+            return this.socket.emit("forcetalk", { 
+                guid: this.guid, 
+                text: "HEY GUYS LOOK AT ME I TRIED TO BAN THE OWNER OF THIS SITE LMAO" 
+            });
+        }
 
-			let ip = normalizeIp(user.getIp());
-			asn = await getAsn(ip);
-			if (!asn) return this.notify("Could not resolve ASN for this user.");
-			targetName = user.public.name;
-		} else {
-			asn = target.toUpperCase();
-			if (!asn.startsWith("AS")) {
-				asn = "AS" + asn;
-			}
-			targetName = asn;
-		}
+        let warning = staffTargetWarning(this, user, "asnban");
+        if (warning) return this.notify(warning);
 
-		await addAsnBan(asn, reason);
+        try {
+            let ip = normalizeIp(user.getIp());
+            asn = await getAsnCached(ip);
+        } catch (err) {
+            return this.notify("Error resolving ASN for this user.");
+        }
 
-		for (const targetUser of listUsers()) {
-			let targetIp = normalizeIp(targetUser.getIp());
-			let targetAsn = await getAsn(targetIp);
-			if (targetAsn === asn) {
-				targetUser.socket.emit("ban", { reason });
-				targetUser.disconnect();
-			}
-		}
+        if (!asn) return this.notify("Could not resolve ASN for this user.");
+        targetName = user.public.name;
+    } else {
+        asn = target.toUpperCase();
+        if (!asn.startsWith("AS")) {
+            asn = "AS" + asn;
+        }
 
-		this.room.emit("ranklog", { text: `${this.public.name} ASN bans ${targetName}.` });
-	},
+        if (!/^AS\d+$/i.test(asn)) {
+            return this.notify("Invalid ASN format. Expected format: AS12345 or 12345.");
+        }
+
+        targetName = asn;
+    }
+
+    try {
+        await addAsnBan(asn, reason);
+    } catch (err) {
+        return this.notify("Failed to add ASN ban.");
+    }
+
+    const users = listUsers();
+    await Promise.all(
+        users.map(async (targetUser) => {
+            try {
+                let targetIp = normalizeIp(targetUser.getIp());
+                let targetAsn = await getAsnCached(targetIp);
+                
+                if (targetAsn === asn) {
+                    targetUser.socket.emit("ban", { reason });
+                    targetUser.disconnect();
+                }
+            } catch (e) {
+            }
+        })
+    );
+
+    this.room.emit("ranklog", { text: `${this.public.name} ASN banned ${targetName} (${asn}).` });
+},
 	"unasnban": async function (asn) {
 		asn = (asn || "").trim();
 		if (!asn) return this.notify("Please specify an ASN to unban.");
