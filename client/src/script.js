@@ -4880,7 +4880,100 @@ function cinemaPopup() {
         height: 400,
     });
 }
+async function openBonziCPU() {
+    new Dialog({
+        title: "BonziCPU (beta)",
+        class: "flex_window",
+        html: `
+            <div class="blessed_body" style="display: flex; flex-direction: column; gap: 10px; height: 100%; box-sizing: border-box; padding: 10px;">
+                <div style="flex: 1; display: flex; flex-direction: column;">
+                    <label for="cpu-log" style="font-weight: bold; margin-bottom: 5px;">CPU Log Output:</label>
+                    <textarea id="cpu-log" readonly style="flex: 1; width: 100%; font-family: monospace; background: #000; color: #0f0; resize: none; padding: 5px; box-sizing: border-box;"></textarea>
+                </div>
 
+                <div style="flex-direction: column; gap: 5px;">
+                    <label for="cpu-input" style="font-weight: bold;">Microcode Input (e.g., WR_EAX 10 or ADD 20):</label>
+                    <input id="cpu-input" type="text" placeholder="Command Value" style="width: 100%; font-family: monospace; padding: 5px; box-sizing: border-box;" />
+                </div>
+
+                <div style="display: flex; gap: 10px; align-items: center; margin-top: 5px;">
+                    <button id="run-cpu-btn" class="xp-button" style="padding: 8px 16px; cursor: pointer; font-weight: bold;">Execute</button>
+                </div>
+            </div>
+        `,
+        x: 300,
+        y: 400,
+        width: 600,
+        height: 550,
+    });
+
+    const logEl = document.getElementById('cpu-log');
+    const inputEl = document.getElementById('cpu-input');
+    const btnEl = document.getElementById('run-cpu-btn');
+
+    function log(msg) {
+        logEl.value += msg + '\n';
+        logEl.scrollTop = logEl.scrollHeight;
+    }
+
+    if (!window.activeCPU) {
+        log("Loading BonziCPU WASM backend...");
+        try {
+            const instance = await window.initBonziCPU('./BonziCPU.wasm');
+            window.activeCPU = instance.cpu;
+            window.activeMem = instance.mem;
+            log("Backend ready. Enter commands below.");
+        } catch (err) {
+            log("Error loading WASM: " + err.message);
+            return;
+        }
+    } else {
+        log("Backend active. Enter commands below.");
+    }
+
+    btnEl.addEventListener('click', () => {
+        if (!window.activeCPU) return log("Error: CPU not initialized.");
+
+        const text = inputEl.value.trim();
+        if (!text) return;
+
+        const parts = text.split(/\s+/);
+        const commandName = parts[0].toUpperCase();
+        const value = parts[1] ? parseInt(parts[1], 10) : 0;
+
+        const opCode = window.CPUMicrocodes[commandName];
+        if (opCode === undefined) {
+            log(`Unknown microcode command: ${commandName}`);
+            return;
+        }
+
+        log(`Running: ${commandName} (${opCode}) with value: ${value}`);
+        
+        window.activeCPU.step(opCode, value);
+
+        const regs = {
+            EAX: window.activeCPU.get_reg(0),
+            EBX: window.activeCPU.get_reg(1),
+            ECX: window.activeCPU.get_reg(2),
+            EDX: window.activeCPU.get_reg(3),
+            ESP: window.activeCPU.get_reg(4),
+            EBP: window.activeCPU.get_reg(5),
+            ESI: window.activeCPU.get_reg(6),
+            EDI: window.activeCPU.get_reg(7),
+            EIP: window.activeCPU.get_reg(8),
+            FLAGS: window.activeCPU.get_reg(9),
+            CR0: window.activeCPU.get_reg(10),
+            AI_STATE: window.activeCPU.get_reg(11)
+        };
+
+        log(`-> EAX: ${regs.EAX} | EBX: ${regs.EBX} | ECX: ${regs.ECX} | EDX: ${regs.EDX}`);
+        log(`-> ESP: ${regs.ESP} | EBP: ${regs.EBP} | ESI: ${regs.ESI} | EDI: ${regs.EDI}`);
+        log(`-> EIP: ${regs.EIP} | FLAGS: ${regs.FLAGS} | CR0: ${regs.CR0} | AI_STATE: ${regs.AI_STATE}`);
+        log(`----------------------------------------------------------------`);
+        
+        inputEl.value = '';
+    });
+}
 function janitorPopup() {
     return new Dialog({
         title: "You're a Janitor!",
@@ -5299,6 +5392,11 @@ function uploadPopup(initialFile) {
 image_button.onclick = () => {
     start_menu.hidden = true;
     uploadPopup();
+};
+
+bonzicpu_button.onclick = () => {
+    start_menu.hidden = true;
+    openBonziCPU();
 };
 
 document.onpaste = (e) => {
